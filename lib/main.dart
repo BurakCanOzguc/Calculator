@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hesap_makine_yeni/widgets/calculator_widget/button_widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -84,6 +85,7 @@ class _CalculatorState extends State<Calculator> {
 
   TextEditingController ilkDeger = TextEditingController();
   TextEditingController ikinciDeger = TextEditingController();
+  TextEditingController islem2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +101,15 @@ class _CalculatorState extends State<Calculator> {
         padding: const EdgeInsets.only(top: 100, left: 50, right: 50),
         child: Column(
           children: [
-            TextField(),
-            TextField(),
-            TextField(),
+            TextField(
+              controller: ilkDeger,
+            ),
+            TextField(
+              controller: islem2,
+            ),
+            TextField(
+              controller: ikinciDeger,
+            ),
             SizedBox(
               height: 20,
             ),
@@ -201,6 +209,7 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("3"),
                   ),
+                  //Çarpma
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -237,6 +246,7 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("6"),
                   ),
+                  //Çıkartma
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -273,6 +283,7 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("9"),
                   ),
+                  //Toplama
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -287,6 +298,7 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("+"),
                   ),
+                  //+/-
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -299,6 +311,7 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("+/-"),
                   ),
+                  //Sıfır
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -311,6 +324,7 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("0"),
                   ),
+                  // Virgül
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -326,6 +340,7 @@ class _CalculatorState extends State<Calculator> {
                       style: TextStyle(fontSize: 30),
                     ),
                   ),
+                  //Eşittir
                   Container(
                     decoration: BoxDecoration(boxShadow: [
                       BoxShadow(
@@ -340,6 +355,14 @@ class _CalculatorState extends State<Calculator> {
                     alignment: Alignment.center,
                     child: const Text("="),
                   ),
+                  ShadowBlueButton(
+                    text: "ds",
+                    onPressed: () {
+                      setState(() {
+                        sayiTopla();
+                      });
+                    },
+                  )
                 ],
               ),
             ),
