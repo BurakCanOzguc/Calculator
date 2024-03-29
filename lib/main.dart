@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hesap_makine_yeni/screens/calculator.dart';
-import 'package:hesap_makine_yeni/widgets/calculator_widget/button_widget.dart/button_widgets.dart';
 
 void main() {
   runApp(const MyApp());

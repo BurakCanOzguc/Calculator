@@ -19,6 +19,7 @@ class OzellestirilmisTextField extends StatelessWidget {
       height: yukseklik,
       width: genislik,
       child: TextField(
+        enabled: false,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
           border: OutlineInputBorder(

@@ -1,81 +1,114 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
-      ),
-      home: const Calculator(),
-    );
-  }
-}
+import 'package:hesap_makine_yeni/widgets/calculator_widget/button_widget.dart/button_widgets.dart';
+import 'package:hesap_makine_yeni/widgets/calculator_widget/textfield_widget/textfields.dart';
 
 class Calculator extends StatefulWidget {
-  const Calculator({super.key});
+  const Calculator({Key? key}) : super(key: key);
 
   @override
   State<Calculator> createState() => _CalculatorState();
 }
 
 class _CalculatorState extends State<Calculator> {
-  num sayi1 = 0, sayi2 = 0, sonuc = 0;
+  String islem = '';
 
-  sayiTopla() {
+  double sayi1 = 0, sayi2 = 0, sonuc = 0;
+
+  TextEditingController ilkDeger = TextEditingController();
+  TextEditingController ikinciDeger = TextEditingController();
+  TextEditingController islemDeger = TextEditingController();
+  TextEditingController sonucDeger = TextEditingController();
+  int bir = 1,
+      iki = 2,
+      uc = 3,
+      dort = 4,
+      bes = 5,
+      alti = 6,
+      yedi = 7,
+      sekiz = 8,
+      dokiz = 9;
+
+  void hesapla() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
+      if (islem == '+') {
+        sonuc = sayi1 + sayi2;
+      } else if (islem == '-') {
+        sonuc = sayi1 - sayi2;
+      } else if (islem == 'x') {
+        sonuc = sayi1 * sayi2;
+      } else if (islem == '/') {
+        if (sayi2 != 0) {
+          sonuc = sayi1 / sayi2;
+        } else {
+          sonuc = 0;
+        }
+      } else if (islem == '%') {
+        sonuc = sayi1 % sayi2;
+      }
+      sonucDeger.text = sonuc.toString();
+    });
+  }
+
+  void sayiTopla() {
+    setState(() {
+      try {
+        sayi1 = double.parse(ilkDeger.text);
+      } on FormatException catch (e) {
+        //hata döndür
+      }
+      sayi2 = double.parse(ikinciDeger.text);
       sonuc = sayi1 + sayi2;
+      islem = '+';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  sayiCikar() {
+  void sayiCikar() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
       sonuc = sayi1 - sayi2;
+      islem = '-';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  sayiCarp() {
+  void sayiCarp() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
       sonuc = sayi1 * sayi2;
+      islem = 'x';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  sayiBol() {
+  void sayiBol() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
       if (sayi2 != 0) {
         sonuc = sayi1 / sayi2;
       } else {
         sonuc = 0;
       }
+      islem = '/';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  TextEditingController ilkDeger = TextEditingController();
-  TextEditingController ikinciDeger = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    double deviceHeight = MediaQuery.of(context).size.height;
-    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height / 12;
+    double deviceWidth = MediaQuery.of(context).size.width / 6;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -83,240 +116,216 @@ class _CalculatorState extends State<Calculator> {
         title: Text("Hesap Makinesi"),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 250, left: 50, right: 50),
+        padding: const EdgeInsets.only(top: 100, left: 50, right: 50),
         child: Column(
           children: [
-            Text('$sonuc'),
+            const MyTextField(),
+            const SizedBox(
+              height: 20,
+            ),
             Expanded(
               child: GridView.count(
-                // reverse: en son elemanı en başa yazmayı sağlar
-
-                // crossAxisCount: soldan sağa kaç tane eleman konulacağını belirtiyoruz.
+                childAspectRatio: (deviceWidth / deviceHeight),
                 crossAxisCount: 4,
-
-                // crossAxisSpacing: soldan sağa doğru sütunların arasındaki boşluk miktarı
                 crossAxisSpacing: 1,
-
-                // mainAxisSpacing: yukarıdan aşağı sütunlar arasındaki boşluk miktarı
                 mainAxisSpacing: 1,
-                // her bir elemanın çevresine verilen boşluk miktarı
                 padding: const EdgeInsets.all(10),
                 children: [
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 7,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("C"),
+                  AmberButton(
+                    text: "C",
+                    onPressed: () {
+                      setState(() {
+                        ilkDeger.clear();
+                        ikinciDeger.clear();
+                        islemDeger.clear();
+                        sonucDeger.clear();
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("1"),
+                  AmberButton(
+                    text: "CE",
+                    onPressed: () {
+                      setState(() {});
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("%"),
+                  AmberButton(
+                    text: "%",
+                    onPressed: () {
+                      setState(() {});
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("/"),
+                  AmberButton(
+                    text: "/",
+                    onPressed: () {
+                      setState(() {
+                        sayiBol();
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ], color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("1"),
+                  ShadowBlueButton(
+                    text: "1",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '1';
+                        } else {
+                          ikinciDeger.text = '1';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("2"),
+                  BlueButton(
+                    text: "2",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '2';
+                        } else {
+                          ikinciDeger.text = '2';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("3"),
+                  BlueButton(
+                    text: "3",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '3';
+                        } else {
+                          ikinciDeger.text = '3';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("x"),
+                  AmberButton(
+                    text: "x",
+                    onPressed: () {
+                      setState(() {
+                        sayiCarp();
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ], color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("4"),
+                  ShadowBlueButton(
+                    text: "4",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '4';
+                        } else {
+                          ikinciDeger.text = '4';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("5"),
+                  BlueButton(
+                    text: "5",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '5';
+                        } else {
+                          ikinciDeger.text = '5';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("6"),
+                  BlueButton(
+                    text: "6",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '6';
+                        } else {
+                          ikinciDeger.text = '6';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("-"),
+                  AmberButton(
+                    text: "-",
+                    onPressed: () {
+                      setState(() {
+                        sayiCikar();
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ], color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("7"),
+                  ShadowBlueButton(
+                    text: "7",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '7';
+                        } else {
+                          ikinciDeger.text = '7';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("8"),
+                  BlueButton(
+                    text: "8",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '8';
+                        } else {
+                          ikinciDeger.text = '8';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("9"),
+                  BlueButton(
+                    text: "9",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '9';
+                        } else {
+                          ikinciDeger.text = '9';
+                        }
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("+"),
+                  AmberButton(
+                    text: "+",
+                    onPressed: () {
+                      setState(() {
+                        sayiTopla();
+                      });
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ], color: Colors.blue, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("0"),
+                  ShadowBlueButton(
+                    text: "+/-",
+                    onPressed: () {
+                      setState(() {});
+                    },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    height: deviceHeight / 10,
-                    width: deviceWidth / 6,
-                    alignment: Alignment.center,
-                    child: const Text("="),
+                  ShadowBlueButton(
+                    text: "0",
+                    onPressed: () {
+                      setState(() {
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '0';
+                        } else {
+                          ikinciDeger.text = '0';
+                        }
+                      });
+                    },
+                  ),
+                  ShadowBlueButton(
+                    text: ",",
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
+                  AmberButton(
+                    text: "=",
+                    onPressed: () {
+                      setState(() {
+                        hesapla();
+                        sonucDeger.text = '= ' + sonucDeger.text;
+                      });
+                    },
                   ),
                 ],
               ),

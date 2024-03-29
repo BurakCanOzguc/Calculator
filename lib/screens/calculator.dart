@@ -2,19 +2,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hesap_makine_yeni/widgets/calculator_widget/button_widget.dart/button_widgets.dart';
+import 'package:hesap_makine_yeni/widgets/calculator_widget/textfield_widget/textfields.dart';
 
 class Calculator extends StatefulWidget {
-  const Calculator({super.key});
+  const Calculator({Key? key}) : super(key: key);
 
   @override
   State<Calculator> createState() => _CalculatorState();
 }
 
 class _CalculatorState extends State<Calculator> {
-  String islem = '+';
+  String islem = '';
 
-  num sayi1 = 0, sayi2 = 0, sonuc = 0;
+  double sayi1 = 0, sayi2 = 0, sonuc = 0;
 
+  TextEditingController ilkDeger = TextEditingController();
+  TextEditingController ikinciDeger = TextEditingController();
+  TextEditingController islemDeger = TextEditingController();
+  TextEditingController sonucDeger = TextEditingController();
   int bir = 1,
       iki = 2,
       uc = 3,
@@ -23,49 +28,82 @@ class _CalculatorState extends State<Calculator> {
       alti = 6,
       yedi = 7,
       sekiz = 8,
-      dokiz = 9,
-      sifir = 0;
+      dokiz = 9;
 
-  sayiTopla() {
+  void hesapla() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
+      if (islem == '+') {
+        sonuc = sayi1 + sayi2;
+      } else if (islem == '-') {
+        sonuc = sayi1 - sayi2;
+      } else if (islem == 'x') {
+        sonuc = sayi1 * sayi2;
+      } else if (islem == '/') {
+        if (sayi2 != 0) {
+          sonuc = sayi1 / sayi2;
+        } else {
+          sonuc = 0;
+        }
+      } else if (islem == '%') {
+        sonuc = sayi1 % sayi2;
+      }
+      sonucDeger.text = sonuc.toString();
+    });
+  }
+
+  void sayiTopla() {
+    setState(() {
+      try {
+        sayi1 = double.parse(ilkDeger.text);
+      } on FormatException catch (e) {
+        //hata döndür
+      }
+      sayi2 = double.parse(ikinciDeger.text);
       sonuc = sayi1 + sayi2;
+      islem = '+';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  sayiCikar() {
+  void sayiCikar() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
       sonuc = sayi1 - sayi2;
+      islem = '-';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  sayiCarp() {
+  void sayiCarp() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
       sonuc = sayi1 * sayi2;
+      islem = 'x';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
 
-  sayiBol() {
+  void sayiBol() {
     setState(() {
-      sayi1 = num.parse(ilkDeger.text);
-      sayi2 = num.parse(ikinciDeger.text);
+      sayi1 = double.parse(ilkDeger.text);
+      sayi2 = double.parse(ikinciDeger.text);
       if (sayi2 != 0) {
         sonuc = sayi1 / sayi2;
       } else {
         sonuc = 0;
       }
+      islem = '/';
+      islemDeger.text = '=';
+      sonucDeger.text = sonuc.toString();
     });
   }
-
-  TextEditingController ilkDeger = TextEditingController();
-  TextEditingController ikinciDeger = TextEditingController();
-  TextEditingController islem2 = TextEditingController();
-  TextEditingController sonuc2 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -81,96 +119,34 @@ class _CalculatorState extends State<Calculator> {
         padding: const EdgeInsets.only(top: 100, left: 50, right: 50),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  height: 40,
-                  width: 70,
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    controller: ilkDeger,
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                  width: 70,
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    controller: islem2,
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                  width: 70,
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    controller: ikinciDeger,
-                  ),
-                ),
-                Text("="),
-                SizedBox(
-                  height: 40,
-                  width: 70,
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    controller: sonuc2,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
+            const MyTextField(),
+            const SizedBox(
               height: 20,
             ),
             Expanded(
               child: GridView.count(
                 childAspectRatio: (deviceWidth / deviceHeight),
-                // reverse: en son elemanı en başa yazmayı sağlar
-
-                // crossAxisCount: soldan sağa kaç tane eleman konulacağını belirtiyoruz.
                 crossAxisCount: 4,
-
-                // crossAxisSpacing: soldan sağa doğru sütunların arasındaki boşluk miktarı
                 crossAxisSpacing: 1,
-
-                // mainAxisSpacing: yukarıdan aşağı sütunlar arasındaki boşluk miktarı
                 mainAxisSpacing: 1,
-                // her bir elemanın çevresine verilen boşluk miktarı
                 padding: const EdgeInsets.all(10),
                 children: [
                   AmberButton(
                     text: "C",
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        ilkDeger.clear();
+                        ikinciDeger.clear();
+                        islemDeger.clear();
+                        sonucDeger.clear();
+                      });
                     },
                   ),
-                  Container(
-                    decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(1, 0),
-                      ),
-                    ], color: Colors.amber, shape: BoxShape.rectangle),
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.backspace),
+                  AmberButton(
+                    text: "CE",
+                    onPressed: () {
+                      setState(() {});
+                    },
                   ),
                   AmberButton(
                     text: "%",
@@ -181,15 +157,20 @@ class _CalculatorState extends State<Calculator> {
                   AmberButton(
                     text: "/",
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        sayiBol();
+                      });
                     },
                   ),
-                  //1. sayı
                   ShadowBlueButton(
                     text: "1",
                     onPressed: () {
                       setState(() {
-                        bir;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '1';
+                        } else {
+                          ikinciDeger.text = '1';
+                        }
                       });
                     },
                   ),
@@ -197,7 +178,11 @@ class _CalculatorState extends State<Calculator> {
                     text: "2",
                     onPressed: () {
                       setState(() {
-                        iki;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '2';
+                        } else {
+                          ikinciDeger.text = '2';
+                        }
                       });
                     },
                   ),
@@ -205,22 +190,31 @@ class _CalculatorState extends State<Calculator> {
                     text: "3",
                     onPressed: () {
                       setState(() {
-                        uc;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '3';
+                        } else {
+                          ikinciDeger.text = '3';
+                        }
                       });
                     },
                   ),
-                  //Çarpma
                   AmberButton(
                     text: "x",
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        sayiCarp();
+                      });
                     },
                   ),
-                  BlueButton(
+                  ShadowBlueButton(
                     text: "4",
                     onPressed: () {
                       setState(() {
-                        dort;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '4';
+                        } else {
+                          ikinciDeger.text = '4';
+                        }
                       });
                     },
                   ),
@@ -228,7 +222,11 @@ class _CalculatorState extends State<Calculator> {
                     text: "5",
                     onPressed: () {
                       setState(() {
-                        bes;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '5';
+                        } else {
+                          ikinciDeger.text = '5';
+                        }
                       });
                     },
                   ),
@@ -236,22 +234,31 @@ class _CalculatorState extends State<Calculator> {
                     text: "6",
                     onPressed: () {
                       setState(() {
-                        alti;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '6';
+                        } else {
+                          ikinciDeger.text = '6';
+                        }
                       });
                     },
                   ),
-                  //Çıkartma
                   AmberButton(
                     text: "-",
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        sayiCikar();
+                      });
                     },
                   ),
                   ShadowBlueButton(
                     text: "7",
                     onPressed: () {
                       setState(() {
-                        yedi;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '7';
+                        } else {
+                          ikinciDeger.text = '7';
+                        }
                       });
                     },
                   ),
@@ -259,7 +266,11 @@ class _CalculatorState extends State<Calculator> {
                     text: "8",
                     onPressed: () {
                       setState(() {
-                        sekiz;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '8';
+                        } else {
+                          ikinciDeger.text = '8';
+                        }
                       });
                     },
                   ),
@@ -267,45 +278,53 @@ class _CalculatorState extends State<Calculator> {
                     text: "9",
                     onPressed: () {
                       setState(() {
-                        dokiz;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '9';
+                        } else {
+                          ikinciDeger.text = '9';
+                        }
                       });
                     },
                   ),
-                  //Toplama
                   AmberButton(
                     text: "+",
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        sayiTopla();
+                      });
                     },
                   ),
-                  //+/-
                   ShadowBlueButton(
                     text: "+/-",
                     onPressed: () {
                       setState(() {});
                     },
                   ),
-                  //Sıfır
                   ShadowBlueButton(
                     text: "0",
                     onPressed: () {
                       setState(() {
-                        sifir;
+                        if (ilkDeger.text == '') {
+                          ilkDeger.text = '0';
+                        } else {
+                          ikinciDeger.text = '0';
+                        }
                       });
                     },
                   ),
-                  // Virgül
                   ShadowBlueButton(
                     text: ",",
                     onPressed: () {
                       setState(() {});
                     },
                   ),
-                  //Eşittir
                   AmberButton(
                     text: "=",
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        hesapla();
+                        sonucDeger.text = '= ' + sonucDeger.text;
+                      });
                     },
                   ),
                 ],
